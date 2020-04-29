@@ -14,17 +14,17 @@ class Config(object):
         self.SAVE_EPISODE_PLOTS = True
         if not hasattr(self, "PLOT_CIRCLES_ALONG_TRAJ"):
             self.PLOT_CIRCLES_ALONG_TRAJ = True
-        self.ANIMATION_PERIOD_STEPS = 5 # plot every n-th DT step (if animate mode on)
+        self.ANIMATION_PERIOD_STEPS = 10 # plot every n-th DT step (if animate mode on)
         self.PLT_LIMITS = None
         self.PLT_FIG_SIZE = (10, 8)
 
         if not hasattr(self, "USE_STATIC_MAP"):
-            self.USE_STATIC_MAP = True
+            self.USE_STATIC_MAP = False
 
         ### TRAIN / PLAY / EVALUATE
         self.TRAIN_MODE           = True # Enable to see the trained agent in action (for testing)
-        self.PLAY_MODE           = True # Enable to see the trained agent in action (for testing)
-        self.EVALUATE_MODE       = True # Enable to see the trained agent in action (for testing)
+        self.PLAY_MODE           = False # Enable to see the trained agent in action (for testing)
+        self.EVALUATE_MODE       = False # Enable to see the trained agent in action (for testing)
 
         ### REWARDS
         self.REWARD_AT_GOAL = 1.0 # reward given when agent reaches goal position
@@ -70,7 +70,7 @@ class Config(object):
             self.MAX_NUM_OTHER_AGENTS_OBSERVED = self.MAX_NUM_AGENTS_IN_ENVIRONMENT - 1
 
         ### EXPERIMENTS
-        self.PLOT_EVERY_N_EPISODES = 100 # for tensorboard visualization
+        self.PLOT_EVERY_N_EPISODES = 1 # for tensorboard visualization
 
         ### SENSORS
         self.SENSING_HORIZON  = np.inf

@@ -35,7 +35,7 @@ policies = {
             }
 
 num_agents_to_test = [5]
-num_test_cases = 50
+num_test_cases = 5
 test_case_args = {}
 Config.PLOT_CIRCLES_ALONG_TRAJ = True
 Config.NUM_TEST_CASES = num_test_cases
@@ -140,7 +140,7 @@ def main():
                 max_ts = [t / dt for t in times_to_goal]
                 trajs = add_traj(agents, trajs, dt, test_case, max_ts)
 
-        # print(trajs)
+        #print(trajs)
 
         one_env.reset()
 
