@@ -11,7 +11,7 @@ def create_env():
     tf.Session().__enter__()
     num_envs = 1
     ncpu = 1
-    
+
     def make_env():
         env = gym.make("CollisionAvoidance-v0")
 
@@ -25,20 +25,20 @@ def create_env():
             env = MultiagentDictToMultiagentArrayWrapper(env, dict_keys=Config.STATES_IN_OBS, max_num_agents=Config.MAX_NUM_AGENTS_IN_ENVIRONMENT)
             # Convert the dict into a flat np array, shape=(max_num_agents*num_states_per_agent)
             # env = MultiagentFlattenDictWrapper(env, dict_keys=Config.STATES_IN_OBS, max_num_agents=Config.MAX_NUM_AGENTS_IN_ENVIRONMENT)
-        
+
         return env
-    
+
     # To be prepared for training on multiple instances of the env at once
     if Config.TRAIN_SINGLE_AGENT:
         env = DummyVecEnv([make_env for _ in range(num_envs)])
     else:
         env = MultiagentDummyVecEnv([make_env for _ in range(num_envs)])
     unwrapped_envs = [e.unwrapped for e in env.envs]
-    
+
     # Set env id for each env
     for i, e in enumerate(unwrapped_envs):
         e.id = i
-    
+
     one_env = unwrapped_envs[0]
     return env, one_env
 
@@ -86,7 +86,7 @@ def run_episode(env, one_env):
 
     env.reset()
 
-    return episode_stats, agents
+    return time_to_goal, extra_time_to_goal, collision, all_at_goal, any_stuck, agents
 
 def store_stats(df, hyperparameters, episode_stats):
     # Add a new row to the pandas DataFrame (a table of results, where each row is an episode)

@@ -63,15 +63,33 @@ dynamics_dict = {
 }
 
 
-def get_testcase_custom():
+def get_testcase_custom(n_humans = 4):
 
-    agents = [
-    #first agent is robot
-        Agent(-goal_x, -goal_y, goal_x, goal_y+offset, radius, 1, None, agents_policy, agents_dynamics, [laserscan], 0),
-        Agent(goal_x, goal_y, -goal_x, -goal_y, radius, 5/3.6, None, policy_dict["RVO"], UnicycleDynamics, [OtherAgentsStatesSensor], 1),
-        Agent(goal_x, goal_y, -goal_x, -goal_y, radius, 5/3.6, None, policy_dict["noncoop"], UnicycleDynamics, [OtherAgentsStatesSensor], 2),
-        Agent(goal_x, goal_y, -goal_x, -goal_y, radius, 5/3.6, None, policy_dict["RVO"], UnicycleDynamics, [OtherAgentsStatesSensor], 3),
-        Agent(goal_x, goal_y, -goal_x, -goal_y, radius, 5/3.6, None, policy_dict["RVO"], UnicycleDynamics, [OtherAgentsStatesSensor], 4)]
+    #allow spawning between +5 and -5m
+    spawn_limit = 5
+    min_distance = 0.5
+
+    def get_random_pos():
+        return np.random.random() * 2 * spawn_limit - spawn_limit
+
+    def get_pos_data():
+        start_x, start_y = get_random_pos(), get_random_pos()
+        end_x, end_y = get_random_pos(), get_random_pos()
+
+        while ((start_x - end_x)**2 + (start_y - end_y)**2 < min_distance**2):
+            end_x, end_y = get_random_pos(), get_random_pos()
+
+        return start_x, start_y, end_x, end_y
+
+    agents = []
+
+    for i in range(n_humans+1):
+        start_x, start_y, end_x, end_y = get_pos_data()
+        if i == 0:
+            agents.append(Agent(start_x, start_y, end_x, end_y, 0.5, 1, None, policy_dict["RVO"], UnicycleDynamics, [OtherAgentsStatesSensor], 0))
+        else:
+            agents.append(Agent(start_x, start_y, end_x, end_y, 0.5, 5/3.6, None, policy_dict["RVO"], UnicycleDynamics, [OtherAgentsStatesSensor], i))
+
     return agents
 
 def get_testcase_crazy(policy="GA3C_CADRL"):

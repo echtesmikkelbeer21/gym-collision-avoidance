@@ -15,14 +15,14 @@ np.random.seed(0)
 
 Config.EVALUATE_MODE = True
 Config.SAVE_EPISODE_PLOTS = True
-Config.SHOW_EPISODE_PLOTS = False
+Config.SHOW_EPISODE_PLOTS = True
 Config.DT = 0.1
 start_from_last_configuration = False
 
-results_subdir = 'trajectory_dataset'
+results_subdir = 'trajectory_dataset_CUSTOM'
 
 # test_case_fn = tc.get_testcase_2agents_swap
-test_case_fn = tc.get_testcase_random
+test_case_fn = tc.get_testcase_custom
 policies = {
             'RVO': {
                 'policy': RVOPolicy,
@@ -34,8 +34,8 @@ policies = {
             #     },
             }
 
-num_agents_to_test = [2]
-num_test_cases = 500
+num_agents_to_test = [5]
+num_test_cases = 50
 test_case_args = {}
 Config.PLOT_CIRCLES_ALONG_TRAJ = True
 Config.NUM_TEST_CASES = num_test_cases
@@ -126,7 +126,7 @@ def main():
                 one_env.plot_policy_name = policy
                 policy_class = policies[policy]['policy']
                 test_case_args['policies'] = 'RVO'
-                agents = test_case_fn(**test_case_args)
+                agents = test_case_fn()
                 for agent in agents:
                     if 'checkpt_name' in policies[policy]:
                         agent.policy.env = env

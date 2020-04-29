@@ -13,6 +13,7 @@ class RobotDynamics(Dynamics):
         self.mass = 10
         self.wheeldiam = 0.1
         self.maxMotorRPM = 100
+        self.motorPosRelToCenter = Vector2(0.3, 0.2)
 
     def step(self, action, dt):
 

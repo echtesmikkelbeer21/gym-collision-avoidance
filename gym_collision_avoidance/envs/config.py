@@ -10,8 +10,8 @@ class Config(object):
 
         ### DISPLAY
         self.ANIMATE_EPISODES   = False
-        self.SHOW_EPISODE_PLOTS = False
-        self.SAVE_EPISODE_PLOTS = False
+        self.SHOW_EPISODE_PLOTS = True
+        self.SAVE_EPISODE_PLOTS = True
         if not hasattr(self, "PLOT_CIRCLES_ALONG_TRAJ"):
             self.PLOT_CIRCLES_ALONG_TRAJ = True
         self.ANIMATION_PERIOD_STEPS = 5 # plot every n-th DT step (if animate mode on)
@@ -19,12 +19,12 @@ class Config(object):
         self.PLT_FIG_SIZE = (10, 8)
 
         if not hasattr(self, "USE_STATIC_MAP"):
-            self.USE_STATIC_MAP = False
+            self.USE_STATIC_MAP = True
 
         ### TRAIN / PLAY / EVALUATE
         self.TRAIN_MODE           = True # Enable to see the trained agent in action (for testing)
-        self.PLAY_MODE           = False # Enable to see the trained agent in action (for testing)
-        self.EVALUATE_MODE       = False # Enable to see the trained agent in action (for testing)
+        self.PLAY_MODE           = True # Enable to see the trained agent in action (for testing)
+        self.EVALUATE_MODE       = True # Enable to see the trained agent in action (for testing)
 
         ### REWARDS
         self.REWARD_AT_GOAL = 1.0 # reward given when agent reaches goal position
