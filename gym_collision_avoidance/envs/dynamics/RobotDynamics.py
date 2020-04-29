@@ -29,9 +29,10 @@ class RobotDynamics(Dynamics):
         desired_speed_local = (action[0] - self.vel) * self.forward
         current_speed_local = np.transpose(get_rotation_matrix(self.agent.heading_global_frame)).dot(self.agent.speed_global_frame)
         delta_speed_local = desired_speed_local - current_speed_local
-        net_force_acc_local = np.clip((dt / self.mass) * delta_speed_local,
-            -2 * self.motor.get_max_torque(current_speed_local[1]),
-            2 * self.motor.get_max_torque(current_speed_local[1]))
+        net_force_acc_local = np.clip((dt / self.mass) * delta_speed_local, -2 * self.motor.get_max_torque(current_speed_local[1]), 2 * self.motor.get_max_torque(current_speed_local[1]))
+
+        delta_rot_speed_global = action[1] / dt - self.rotspeed
+        
 
 class Motor():
 
