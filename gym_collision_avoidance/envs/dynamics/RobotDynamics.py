@@ -10,6 +10,9 @@ class RobotDynamics(Dynamics):
     def __init__(self, agent):
         Dynamics.__init__(self, agent)
         self.mass = 10 #kg
+        self.inertia = 10
+        self.pos_vector_motor_1 = np.array([0.2, -0.2])
+        self.pos_vector_motor_2 = np.array([-0.2, -0.2])
         self.forward = np.array([0, 1])
         self.pos = np.array[0, 0]
         self.dir = np.array[0, 0]
@@ -32,7 +35,6 @@ class RobotDynamics(Dynamics):
         net_force_acc_local = np.clip((dt / self.mass) * delta_speed_local, -2 * self.motor.get_max_torque(current_speed_local[1]), 2 * self.motor.get_max_torque(current_speed_local[1]))
 
         delta_rot_speed_global = action[1] / dt - self.rotspeed
-        
 
 class Motor():
 
