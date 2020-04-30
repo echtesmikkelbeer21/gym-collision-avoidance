@@ -11,7 +11,7 @@ class Config(object):
         ### DISPLAY
         self.ANIMATE_EPISODES    = False
         self.SHOW_EPISODE_PLOTS = False
-        self.SAVE_EPISODE_PLOTS = False
+        self.SAVE_EPISODE_PLOTS = True
         if not hasattr(self, "PLOT_CIRCLES_ALONG_TRAJ"):
             self.PLOT_CIRCLES_ALONG_TRAJ = True
         self.ANIMATION_PERIOD_STEPS = 5 # plot every n-th DT step (if animate mode on)
@@ -20,12 +20,12 @@ class Config(object):
 
         if not hasattr(self, "USE_STATIC_MAP"):
             self.USE_STATIC_MAP = False
-        
+
         ### TRAIN / PLAY / EVALUATE
         self.TRAIN_MODE           = True # Enable to see the trained agent in action (for testing)
         self.PLAY_MODE           = False # Enable to see the trained agent in action (for testing)
         self.EVALUATE_MODE       = False # Enable to see the trained agent in action (for testing)
-        
+
         ### REWARDS
         self.REWARD_AT_GOAL = 1.0 # reward given when agent reaches goal position
         self.REWARD_COLLISION_WITH_AGENT = -0.25 # reward given when agent collides with another agent
@@ -45,7 +45,7 @@ class Config(object):
         self.DT             = 0.2 # seconds between simulation time steps
         self.NEAR_GOAL_THRESHOLD = 0.2
         self.MAX_TIME_RATIO = 2. # agent has this number times the straight-line-time to reach its goal before "timing out"
-        
+
         ### TEST CASE SETTINGS
         self.TEST_CASE_FN = "get_testcase_random"
         self.TEST_CASE_ARGS = {
@@ -55,7 +55,7 @@ class Config(object):
             'speed_bnds': [0.5, 2.0],
             'radius_bnds': [0.2, 0.8],
             'side_length': [
-                {'num_agents': [0,5], 'side_length': [4,5]}, 
+                {'num_agents': [0,5], 'side_length': [4,5]},
                 {'num_agents': [5,np.inf], 'side_length': [6,8]},
                 ],
             # 'agents_sensors': ['other_agents_states_encoded'],
@@ -166,7 +166,7 @@ class Config(object):
                 }
             }
         self.setup_obs()
-    
+
         # self.AGENT_SORTING_METHOD = "closest_last"
         self.AGENT_SORTING_METHOD = "closest_first"
         # self.AGENT_SORTING_METHOD = "time_to_impact"

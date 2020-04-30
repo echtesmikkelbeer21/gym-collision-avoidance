@@ -28,6 +28,7 @@ from gym_collision_avoidance.envs.policies.LearningPolicyGA3C import LearningPol
 
 # Dynamics
 from gym_collision_avoidance.envs.dynamics.UnicycleDynamics import UnicycleDynamics
+from gym_collision_avoidance.envs.dynamics.RobotDynamics import RobotDynamics
 from gym_collision_avoidance.envs.dynamics.UnicycleDynamicsMaxTurnRate import UnicycleDynamicsMaxTurnRate
 from gym_collision_avoidance.envs.dynamics.ExternalDynamics import ExternalDynamics
 
@@ -66,12 +67,39 @@ dynamics_dict = {
     'unicycle': UnicycleDynamics,
 }
 
+def get_testcase_cyberzoo(num_humans = 4, agents_policy=LearningPolicy):
+    pref_speed_robot = 1.0
+    pref_speed_humans = 5/3.6
+    radius = 1.0
+    xlim, ylim = 4,4
+    min_dis = 1.0
+
+    agents = []
+
+    def getRandomStartAndFinish():
+        x0, y0 = np.random.random() * 2 * xlim - xlim, np.random.random() * 2 * ylim - ylim
+        x1, y1 = np.random.random() * 2 * xlim - xlim, np.random.random() * 2 * ylim - ylim
+
+        while ((x1 - x0)**2 + (y1 - y0)**2 <= min_dis ** 2):
+            x1, y1 = np.random.random() * 2 * xlim - xlim, np.random.random() * 2 * ylim - ylim
+
+        return x0, y0, x1, y1
+
+    for n in range(num_humans+1):
+        x0, y0, x1, y1 = getRandomStartAndFinish()
+        if n == 0:
+            agents.append(Agent(x0, y0, x1, y1, radius, pref_speed_robot, None, RVOPolicy, RobotDynamics, [OtherAgentsStatesSensor], 0))
+        else:
+            agents.append(Agent(x0, y0, x1, y1, radius, pref_speed_humans, None, RVOPolicy, UnicycleDynamicsMaxTurnRate, [OtherAgentsStatesSensor], n))
+
+    return agents
+
 def get_testcase_crazy(policy="GA3C_CADRL"):
     agents = [
         Agent(0., 0., 0., 8., 0.8, 1.0, np.pi/2, policy_dict[policy], UnicycleDynamics, [OtherAgentsStatesSensor], 0),
         Agent(-1.2, 0., -1.2, 5., 0.8, 1.0, np.pi/2, policy_dict["RVO"], UnicycleDynamics, [OtherAgentsStatesSensor], 1),
         Agent(-1.2, 2.0, -1.2, -3, 0.8, 1.0, -np.pi/2, policy_dict["RVO"], UnicycleDynamics, [OtherAgentsStatesSensor], 2),
-    ] 
+    ]
     return agents
 
 def get_testcase_two_agents(policies=['learning', 'GA3C_CADRL']):
@@ -102,7 +130,7 @@ def get_testcase_random(num_agents=None, side_length=4, speed_bnds=[0.5, 2.0], r
         # to enable larger worlds for larger nums of agents (to somewhat maintain density)
         for comp in side_length:
             if comp['num_agents'][0] <= num_agents < comp['num_agents'][1]:
-                side_length = np.random.uniform(comp['side_length'][0], comp['side_length'][1]) 
+                side_length = np.random.uniform(comp['side_length'][0], comp['side_length'][1])
         assert(type(side_length) == float)
 
     cadrl_test_case = tc.generate_rand_test_case_multi(num_agents, side_length, speed_bnds, radius_bnds)
@@ -211,41 +239,41 @@ def formation(agents, letter, num_agents=6):
     formations = {
         'A': 2*np.array([
               [-1.5, 0.0], # A
-              [1.5, 0.0], 
+              [1.5, 0.0],
               [0.75, 1.5],
               [-0.75, 1.5],
-              [0.0, 1.5], 
+              [0.0, 1.5],
               [0.0, 3.0]
             ]),
         'C': 2*np.array([
               [0.0, 0.0], # C
-              [-0.5, 1.0], 
+              [-0.5, 1.0],
               [-0.5, 2.0],
               [0.0, 3.0],
-              [1.5, 0.0], 
+              [1.5, 0.0],
               [1.5, 3.0]
               ]),
         'L': 2*np.array([
             [0.0, 0.0], # L
-            [0.0, 1.0], 
+            [0.0, 1.0],
             [0.0, 2.0],
             [0.0, 3.0],
-            [0.75, 0.0], 
+            [0.75, 0.0],
             [1.5, 0.0]
             ]),
         'D': 2*np.array([
             [0.0, 0.0],
-            [0.0, 1.5], 
+            [0.0, 1.5],
             [0.0, 3.0],
-            [1.5, 1.5], 
+            [1.5, 1.5],
             [1.2, 2.5],
             [1.2, 0.5],
             ]),
         'R': 2*np.array([
             [0.0, 0.0],
-            [0.0, 1.5], 
+            [0.0, 1.5],
             [0.0, 3.0],
-            [1.3, 2.8], 
+            [1.3, 2.8],
             [1.2, 1.7],
             [1.7, 0.0],
             ]),
@@ -607,7 +635,7 @@ def get_testcase_huge():
 if __name__ == '__main__':
     seed = 0
     carrl = False
-    
+
     np.random.seed(seed)
     # speed_bnds = [0.5, 1.5]
     speed_bnds = [1.0, 1.0]
@@ -652,5 +680,3 @@ if __name__ == '__main__':
     # filename = os.path.dirname(os.path.realpath(__file__)) + '/test_cases/100agents.p'
     # with open(filename, "wb") as f:
     #     pickle.dump(test_cases, f)
-
-
