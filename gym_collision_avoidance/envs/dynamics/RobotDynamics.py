@@ -31,14 +31,18 @@ class RobotDynamics(Dynamics):
         desired_speed_local = (action[0] - self.vel) * self.forward
         current_speed_local = np.transpose(get_rotation_matrix(self.agent.heading_global_frame)).dot(self.agent.speed_global_frame)
         delta_speed_local = desired_speed_local - current_speed_local
-        net_force_acc_local = np.clip((dt / self.mass) * delta_speed_local, -2 * self.max_motor_force_local, 2 * self.max_motor_force_local)
+        net_force_acc_local = (dt / self.mass) * delta_speed_local
 
-        max_torque = crossproduct2D(pos_motor_a_local, max_motor_force_local) * 2
+        max_torque = crossproduct2D(pos_motor_a_local, max_motor_force_local)
 
         desired_rot_speed_local = action[1] / dt
         delta_rot_speed_local = desired_rot_speed_local - self.rotspeed
-        net_torque_acc_local = np.clip((dt / self.inertia) * delta_rot_speed_local, -max_torque, max_torque)
+        net_torque_acc_local = (dt / self.inertia) * delta_rot_speed_local
 
         #now solve for system of vector equations using inverse matrix multiplication
         forceVector = np.dot(self.mainMatrix, np.array([net_force_acc_local[1], net_torque_acc_local]))
-        motor1, motor2 = np.array([0, forceVector[0]]), np.array([0, forceVector[1]])
+        motor1 = np.clip(np.array([0, forceVector[0]]), -self.max_motor_force_local, self.max_motor_force_local)
+        motor2 = np.clip(np.array([0, forceVector[2]]), -self.max_motor_force_local, self.max_motor_force_local)
+
+        #calculating new (angular) velocities
+        
