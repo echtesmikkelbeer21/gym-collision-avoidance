@@ -135,7 +135,7 @@ def plot_episode(agents, in_evaluate_mode,
     else:
         ax.axis('equal')
 
-    if in_evaluate_mode and save:
+    if in_evaluate_mode:
         fig_name = base_fig_name.format(
             policy=plot_policy_name,
             num_agents = len(agents),

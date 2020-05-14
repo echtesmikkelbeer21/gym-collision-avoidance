@@ -80,7 +80,7 @@ class CollisionAvoidanceEnv(gym.Env):
 
         ### The gym.spaces library doesn't support Python2.7 (syntax of Super().__init__())
         self.action_space_type = Config.ACTION_SPACE_TYPE
-        
+
         if self.action_space_type == Config.discrete:
             self.action_space = gym.spaces.Discrete(self.actions.num_actions, dtype=np.float32)
         elif self.action_space_type == Config.continuous:
@@ -89,16 +89,16 @@ class CollisionAvoidanceEnv(gym.Env):
             self.high_action = np.array([self.max_speed,
                                          self.max_heading_change])
             self.action_space = gym.spaces.Box(self.low_action, self.high_action, dtype=np.float32)
-        
+
 
         # original observation space
         # self.observation_space = gym.spaces.Box(self.low_state, self.high_state, dtype=np.float32)
-        
+
         # not used...
         # self.observation_space = np.array([gym.spaces.Box(self.low_state, self.high_state, dtype=np.float32)
                                            # for _ in range(self.num_agents)])
         # observation_space = gym.spaces.Box(self.low_state, self.high_state, dtype=np.float32)
-        
+
         # single agent dict obs
         self.observation = {}
         for agent in range(Config.MAX_NUM_AGENTS_IN_ENVIRONMENT):
@@ -166,7 +166,7 @@ class CollisionAvoidanceEnv(gym.Env):
         # Take observation
         next_observations = self._get_obs()
 
-        if Config.ANIMATE_EPISODES and self.episode_step_number % self.animation_period_steps == 0:
+        if self.episode_step_number % self.animation_period_steps == 0:
             plot_episode(self.agents, False, self.map, self.test_case_index,
                 circles_along_traj=Config.PLOT_CIRCLES_ALONG_TRAJ,
                 plot_save_dir=self.plot_save_dir,
@@ -215,20 +215,20 @@ class CollisionAvoidanceEnv(gym.Env):
         return self._get_obs()
 
     def _take_action(self, actions, dt):
-        """ Some agents' actions come externally through the actions arg, agents with internal policies query their policy here, 
+        """ Some agents' actions come externally through the actions arg, agents with internal policies query their policy here,
         then each agent takes a step simultaneously.
 
         This makes it so an external script that steps through the environment doesn't need to
         be aware of internals of the environment, like ensuring RVO agents compute their RVO actions.
         Instead, all policies that are already trained/frozen are computed internally, and if an
         agent's policy is still being trained, it's convenient to isolate the training code from the environment this way.
-        Or, if there's a real robot with its own planner on-board (thus, the agent should have an ExternalPolicy), 
+        Or, if there's a real robot with its own planner on-board (thus, the agent should have an ExternalPolicy),
         we don't bother computing its next action here and just take what the actions dict said.
 
         Args:
             actions (dict): keyed by agent indices, each value has a [delta heading angle, speed] command.
                 Agents with an ExternalPolicy sub-class receive their actions through this dict.
-                Other agents' indices shouldn't appear in this dict, but will be ignored if so, because they have 
+                Other agents' indices shouldn't appear in this dict, but will be ignored if so, because they have
                 an InternalPolicy sub-class, meaning they can
                 compute their actions internally given their observation (e.g., already trained CADRL, RVO, Non-Cooperative, etc.)
             dt (float): time in seconds to run the simulation (defaults to :code:`self.dt_nominal`)
@@ -271,7 +271,7 @@ class CollisionAvoidanceEnv(gym.Env):
         """ Set self.agents (presumably at the start of a new episode) and set each agent's max heading change and speed based on env limits.
 
         self.agents gets set to self.default_agents if it exists.
-        Otherwise, self.agents gets set to the result of self.test_case_fn(self.test_case_args).        
+        Otherwise, self.agents gets set to the result of self.test_case_fn(self.test_case_args).
         """
 
         # The evaluation scripts need info about the previous episode's agents
@@ -293,9 +293,9 @@ class CollisionAvoidanceEnv(gym.Env):
 
     def set_static_map(self, map_filename):
         """ If you want to have static obstacles, provide the path to the map image file that should be loaded.
-        
+
         Args:
-            map_filename (str or list): full path of a binary png file corresponding to the environment prior map 
+            map_filename (str or list): full path of a binary png file corresponding to the environment prior map
                 (or list of candidate map paths to randomly choose btwn each episode)
         """
         self.static_map_filename = map_filename
@@ -318,7 +318,7 @@ class CollisionAvoidanceEnv(gym.Env):
 
     def _compute_rewards(self):
         """ Check for collisions and reaching of the goal here, and also assign the corresponding rewards based on those calculations.
-        
+
         Returns:
             rewards (scalar or list): is a scalar if we are only training on a single agent, or
                       is a list of scalars if we are training on mult agents
@@ -368,8 +368,8 @@ class CollisionAvoidanceEnv(gym.Env):
         return rewards
 
     def _check_for_collisions(self):
-        """ Check whether each agent has collided with another agent or a static obstacle in the map 
-        
+        """ Check whether each agent has collided with another agent or a static obstacle in the map
+
         This method doesn't compute social zones currently!!!!!
 
         Returns:
@@ -424,7 +424,7 @@ class CollisionAvoidanceEnv(gym.Env):
         which_agents_done = np.logical_or.reduce((at_goal_condition, ran_out_of_time_condition, in_collision_condition))
         for agent_index, agent in enumerate(self.agents):
             agent.is_done = which_agents_done[agent_index]
-        
+
         if Config.EVALUATE_MODE:
             # Episode ends when every agent is done
             game_over = np.all(which_agents_done)
@@ -435,11 +435,11 @@ class CollisionAvoidanceEnv(gym.Env):
             # Episode is done when all *learning* agents are done
             learning_agent_inds = [i for i in range(len(self.agents)) if self.agents[i].policy.is_still_learning]
             game_over = np.all(which_agents_done[learning_agent_inds])
-        
+
         return which_agents_done, game_over
 
     def _get_obs(self):
-        """ Update the map now that agents have moved, have each agent sense the world, and fill in their observations 
+        """ Update the map now that agents have moved, have each agent sense the world, and fill in their observations
 
         Returns:
             observation (list): for each agent, a dictionary observation.
@@ -484,7 +484,7 @@ class CollisionAvoidanceEnv(gym.Env):
 
     def set_plot_save_dir(self, plot_save_dir):
         """ Set where to save plots of trajectories (will get created if non-existent)
-        
+
         Args:
             plot_save_dir (str): path to directory you'd like to save plots in
 
@@ -498,7 +498,7 @@ class CollisionAvoidanceEnv(gym.Env):
         self.perturbed_obs = perturbed_obs
 
     def set_testcase(self, test_case_fn_str, test_case_args):
-        """ 
+        """
 
         Args:
             test_case_fn_str (str): name of function in test_cases.py

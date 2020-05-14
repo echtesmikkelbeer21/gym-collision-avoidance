@@ -66,12 +66,46 @@ dynamics_dict = {
     'unicycle': UnicycleDynamics,
 }
 
+def get_testcase_cyberzoo():
+    num_agents = 5
+
+    xMin = -3; xMax = 3
+    yMin = -3; yMax = 3
+    xDelta = xMax - xMin; yDelta = yMax - yMin
+    minDistance = 1.5
+
+    pedestrianSpeed = 4/3.6
+    robotSpeed = 2/3.6
+
+    pos = []
+    agents = []
+    np.random.seed()
+
+    def checkDis(x, y, pos):
+        for point in pos:
+            if (point[0] - x)**2 + (point[1] - y)**2 < minDistance**2:
+                return False
+        return True
+
+    while len(pos) < num_agents * 2:
+        x, y = np.random.random() * xDelta + xMin, np.random.random() * yDelta + yMin
+        if checkDis(x, y, pos):
+            pos.append([x, y])
+
+    for n in range(num_agents):
+        if n == 0:
+            agents.append(Agent(pos[2*n][0], pos[2*n][1], pos[2*n+1][0], pos[2*n+1][1], 0.3, robotSpeed, 0, RVOPolicy, UnicycleDynamics, [OtherAgentsStatesSensor], n))
+        else:
+            agents.append(Agent(pos[2*n][0], pos[2*n][1], pos[2*n+1][0], pos[2*n+1][1], 0.3, pedestrianSpeed, 0, RVOPolicy, UnicycleDynamics, [OtherAgentsStatesSensor], n))
+
+    return agents
+
 def get_testcase_crazy(policy="GA3C_CADRL"):
     agents = [
         Agent(0., 0., 0., 8., 0.8, 1.0, np.pi/2, policy_dict[policy], UnicycleDynamics, [OtherAgentsStatesSensor], 0),
         Agent(-1.2, 0., -1.2, 5., 0.8, 1.0, np.pi/2, policy_dict["RVO"], UnicycleDynamics, [OtherAgentsStatesSensor], 1),
         Agent(-1.2, 2.0, -1.2, -3, 0.8, 1.0, -np.pi/2, policy_dict["RVO"], UnicycleDynamics, [OtherAgentsStatesSensor], 2),
-    ] 
+    ]
     return agents
 
 def get_testcase_two_agents(policies=['learning', 'GA3C_CADRL']):
@@ -102,7 +136,7 @@ def get_testcase_random(num_agents=None, side_length=4, speed_bnds=[0.5, 2.0], r
         # to enable larger worlds for larger nums of agents (to somewhat maintain density)
         for comp in side_length:
             if comp['num_agents'][0] <= num_agents < comp['num_agents'][1]:
-                side_length = np.random.uniform(comp['side_length'][0], comp['side_length'][1]) 
+                side_length = np.random.uniform(comp['side_length'][0], comp['side_length'][1])
         assert(type(side_length) == float)
 
     cadrl_test_case = tc.generate_rand_test_case_multi(num_agents, side_length, speed_bnds, radius_bnds)
@@ -211,41 +245,41 @@ def formation(agents, letter, num_agents=6):
     formations = {
         'A': 2*np.array([
               [-1.5, 0.0], # A
-              [1.5, 0.0], 
+              [1.5, 0.0],
               [0.75, 1.5],
               [-0.75, 1.5],
-              [0.0, 1.5], 
+              [0.0, 1.5],
               [0.0, 3.0]
             ]),
         'C': 2*np.array([
               [0.0, 0.0], # C
-              [-0.5, 1.0], 
+              [-0.5, 1.0],
               [-0.5, 2.0],
               [0.0, 3.0],
-              [1.5, 0.0], 
+              [1.5, 0.0],
               [1.5, 3.0]
               ]),
         'L': 2*np.array([
             [0.0, 0.0], # L
-            [0.0, 1.0], 
+            [0.0, 1.0],
             [0.0, 2.0],
             [0.0, 3.0],
-            [0.75, 0.0], 
+            [0.75, 0.0],
             [1.5, 0.0]
             ]),
         'D': 2*np.array([
             [0.0, 0.0],
-            [0.0, 1.5], 
+            [0.0, 1.5],
             [0.0, 3.0],
-            [1.5, 1.5], 
+            [1.5, 1.5],
             [1.2, 2.5],
             [1.2, 0.5],
             ]),
         'R': 2*np.array([
             [0.0, 0.0],
-            [0.0, 1.5], 
+            [0.0, 1.5],
             [0.0, 3.0],
-            [1.3, 2.8], 
+            [1.3, 2.8],
             [1.2, 1.7],
             [1.7, 0.0],
             ]),
@@ -607,7 +641,7 @@ def get_testcase_huge():
 if __name__ == '__main__':
     seed = 0
     carrl = False
-    
+
     np.random.seed(seed)
     # speed_bnds = [0.5, 1.5]
     speed_bnds = [1.0, 1.0]
@@ -652,5 +686,3 @@ if __name__ == '__main__':
     # filename = os.path.dirname(os.path.realpath(__file__)) + '/test_cases/100agents.p'
     # with open(filename, "wb") as f:
     #     pickle.dump(test_cases, f)
-
-
