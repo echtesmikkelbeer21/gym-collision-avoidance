@@ -9,9 +9,9 @@ class Config(object):
         self.ACTION_SPACE_TYPE   = self.continuous
 
         ### DISPLAY
-        self.ANIMATE_EPISODES    = True
+        self.ANIMATE_EPISODES    = False
         self.SHOW_EPISODE_PLOTS = False
-        self.SAVE_EPISODE_PLOTS = True
+        self.SAVE_EPISODE_PLOTS = False
         if not hasattr(self, "PLOT_CIRCLES_ALONG_TRAJ"):
             self.PLOT_CIRCLES_ALONG_TRAJ = True
         self.ANIMATION_PERIOD_STEPS = 1 # plot every n-th DT step (if animate mode on)

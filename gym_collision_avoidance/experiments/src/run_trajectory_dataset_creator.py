@@ -14,9 +14,9 @@ from gym_collision_avoidance.envs.policies.GA3CCADRLPolicy import GA3CCADRLPolic
 np.random.seed(1)
 
 Config.EVALUATE_MODE = True
-Config.SAVE_EPISODE_PLOTS = True
+Config.SAVE_EPISODE_PLOTS = False
 Config.SHOW_EPISODE_PLOTS = False
-Config.ANIMATE_EPISODES = True
+Config.ANIMATE_EPISODES = False
 Config.PLOT_CIRCLES_ALONG_TRAJ = True
 
 Config.EVALUATE_MODE =  True
@@ -45,7 +45,7 @@ policies = {
             }
 
 num_agents_to_test = [5]
-num_test_cases = 1
+num_test_cases = 100000
 test_case_args = {}
 Config.NUM_TEST_CASES = num_test_cases
 
@@ -131,8 +131,8 @@ def main():
                 if not collision:
                     for agent in agents:
                         agent.global_state_history = agent.global_state_history[:agent.step_num]
-                    if agents[0].step_num != agents[1].step_num:
-                        print("Different times")
+                    #if agents[0].step_num != agents[1].step_num:
+                        #print("Different times")
                     last_time = add_traj(agents, trajs, dt,last_time)
 
         # print(trajs)

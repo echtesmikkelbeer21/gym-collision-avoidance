@@ -7,9 +7,9 @@ class RobotDynamics(Dynamics):
 
     def __init__(self, agent):
         Dynamics.__init__(self, agent)
-        self.mass = 6
+        self.mass = 12
         self.inertia = 6
-        self.maxForce = 65
+        self.maxForce = 35
         self.maxTorque = 35
         self.maxSpeed = 1
         self.maxRotSpeed = np.pi*10
@@ -31,7 +31,6 @@ class RobotDynamics(Dynamics):
     def step(self, action, dt):
         set_speed = action[0]
         rotation = action[1]
-        print(set_speed, rotation)
 
         deltaSpeed = set_speed - math.sqrt(self.stateVector[1]**2 + self.stateVector[3]**2)
         force = np.clip(deltaSpeed * self.mass / dt, -self.maxForce, self.maxForce)
@@ -59,8 +58,7 @@ class RobotDynamics(Dynamics):
         self.agent.vel_global_frame[1] = self.stateVector[3]
         self.agent.speed_global_frame = math.sqrt(self.stateVector[1]**2 + self.stateVector[3]**2)
 
-        turning_rate = np.clip(rotation/dt, -self.maxRotSpeed*dt, self.maxRotSpeed*dt)
-        selected_heading = wrap(turning_rate*dt + self.agent.heading_global_frame)
+        selected_heading = wrap(action[1] + self.agent.heading_global_frame)
 
         self.agent.delta_heading_global_frame = wrap(selected_heading - self.agent.heading_global_frame)
         self.agent.heading_global_frame = selected_heading
