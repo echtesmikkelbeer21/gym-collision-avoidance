@@ -30,6 +30,7 @@ from gym_collision_avoidance.envs.policies.LearningPolicyGA3C import LearningPol
 from gym_collision_avoidance.envs.dynamics.UnicycleDynamics import UnicycleDynamics
 from gym_collision_avoidance.envs.dynamics.UnicycleDynamicsMaxTurnRate import UnicycleDynamicsMaxTurnRate
 from gym_collision_avoidance.envs.dynamics.ExternalDynamics import ExternalDynamics
+from gym_collision_avoidance.envs.dynamics.robotDynamics import RobotDynamics
 
 # Sensors
 from gym_collision_avoidance.envs.sensors.OccupancyGridSensor import OccupancyGridSensor
@@ -94,9 +95,9 @@ def get_testcase_cyberzoo():
 
     for n in range(num_agents):
         if n == 0:
-            agents.append(Agent(pos[2*n][0], pos[2*n][1], pos[2*n+1][0], pos[2*n+1][1], 0.3, robotSpeed, 0, RVOPolicy, UnicycleDynamics, [OtherAgentsStatesSensor], n))
+            agents.append(Agent(pos[2*n][0], pos[2*n][1], pos[2*n+1][0], pos[2*n+1][1], 0.3, robotSpeed, 0, RVOPolicy, RobotDynamics, [OtherAgentsStatesSensor], n))
         else:
-            agents.append(Agent(pos[2*n][0], pos[2*n][1], pos[2*n+1][0], pos[2*n+1][1], 0.3, pedestrianSpeed, 0, RVOPolicy, UnicycleDynamics, [OtherAgentsStatesSensor], n))
+            agents.append(Agent(pos[2*n][0], pos[2*n][1], pos[2*n+1][0], pos[2*n+1][1], 0.45, pedestrianSpeed, 0, RVOPolicy, UnicycleDynamics, [OtherAgentsStatesSensor], n))
 
     return agents
 

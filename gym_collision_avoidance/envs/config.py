@@ -82,7 +82,7 @@ class Config(object):
 
         ### RVO AGENTS
         self.RVO_TIME_HORIZON = 5.0
-        self.RVO_COLLAB_COEFF = 0.5
+        self.RVO_COLLAB_COEFF = 0.6
         self.RVO_ANTI_COLLAB_T = 1.0
 
         ### OBSERVATION VECTOR

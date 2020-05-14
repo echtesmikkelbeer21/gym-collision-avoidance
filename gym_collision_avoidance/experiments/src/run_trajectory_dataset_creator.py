@@ -45,7 +45,7 @@ policies = {
             }
 
 num_agents_to_test = [5]
-num_test_cases = 5
+num_test_cases = 1
 test_case_args = {}
 Config.NUM_TEST_CASES = num_test_cases
 
