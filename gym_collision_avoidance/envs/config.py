@@ -9,7 +9,7 @@ class Config(object):
         self.ACTION_SPACE_TYPE   = self.continuous
 
         ### DISPLAY
-        self.ANIMATE_EPISODES    = False
+        self.ANIMATE_EPISODES    = True
         self.SHOW_EPISODE_PLOTS = False
         self.SAVE_EPISODE_PLOTS = False
         if not hasattr(self, "PLOT_CIRCLES_ALONG_TRAJ"):

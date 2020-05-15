@@ -166,7 +166,7 @@ class CollisionAvoidanceEnv(gym.Env):
         # Take observation
         next_observations = self._get_obs()
 
-        if Config.ANIMATE_EPISODES and self.episode_step_number % self.animation_period_steps == 0:
+        if self.episode_step_number % self.animation_period_steps == 0:
             plot_episode(self.agents, False, self.map, self.test_case_index,
                 circles_along_traj=Config.PLOT_CIRCLES_ALONG_TRAJ,
                 plot_save_dir=self.plot_save_dir,

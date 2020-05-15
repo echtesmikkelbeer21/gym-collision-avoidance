@@ -16,7 +16,7 @@ np.random.seed(1)
 Config.EVALUATE_MODE = True
 Config.SAVE_EPISODE_PLOTS = False
 Config.SHOW_EPISODE_PLOTS = False
-Config.ANIMATE_EPISODES = False
+Config.ANIMATE_EPISODES = True
 Config.PLOT_CIRCLES_ALONG_TRAJ = True
 
 Config.EVALUATE_MODE =  True
@@ -27,12 +27,10 @@ start_from_last_configuration = False
 
 results_subdir = 'test'
 
-#test_case_fn = tc.get_traincase_2agents_swap
-#test_case_fn = tc.agents_swap
-#test_case_fn = tc.random_agents_swap
-#test_case_fn = tc.get_traincase_2agents_swap
-#test_case_fn = tc.get_testcase_random
-test_case_fn = tc.get_testcase_cyberzoo
+#test_case_fn = tc.get_testcase_cyberzoo
+#test_case_fn = tc.get_testcase_inward_cross
+#test_case_fn = tc.get_testcase_outward_cross
+test_case_fn = tc.get_testcase_stationary
 policies = {
             'RVO': {
                 'policy': RVOPolicy,
@@ -45,7 +43,7 @@ policies = {
             }
 
 num_agents_to_test = [5]
-num_test_cases = 100000
+num_test_cases = 1
 test_case_args = {}
 Config.NUM_TEST_CASES = num_test_cases
 

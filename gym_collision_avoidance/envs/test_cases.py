@@ -38,6 +38,8 @@ from gym_collision_avoidance.envs.sensors.LaserScanSensor import LaserScanSensor
 from gym_collision_avoidance.envs.sensors.OtherAgentsStatesSensor import OtherAgentsStatesSensor
 from gym_collision_avoidance.envs import Config
 
+from gym_collision_avoidance.envs.util import wrap, find_nearest
+
 import os
 import pickle
 
@@ -100,6 +102,73 @@ def get_testcase_cyberzoo():
             agents.append(Agent(pos[2*n][0], pos[2*n][1], pos[2*n+1][0], pos[2*n+1][1], 0.5, pedestrianSpeed, 0, RVOPolicy, UnicycleDynamics, [OtherAgentsStatesSensor], n))
 
     return agents
+
+def get_testcase_inward_cross():
+    import math
+    Config.RVO_COLLAB_COEFF = 0.0
+
+    r = 5
+    n_agents = 5
+    angle = np.pi * 2 / n_agents
+    agents = []
+
+    for i in range(n_agents):
+        agents.append(Agent(r * math.cos(angle * i), r * math.sin(angle * i), 0, 0, 0.5, 1.0, wrap(angle * i + np.pi/2), NonCooperativePolicy, UnicycleDynamics, [OtherAgentsStatesSensor], i))
+
+    return agents
+
+def get_testcase_outward_cross():
+    import math
+    Config.RVO_COLLAB_COEFF = 0.0
+
+    rmax, rmin = 5, 1
+    n_agents = 5
+    angle = np.pi * 2 / n_agents
+    agents = []
+
+    for i in range(n_agents):
+        agents.append(Agent(rmin * math.cos(angle * i), rmin * math.sin(angle * i), rmax * math.cos(angle * i), rmax * math.sin(angle * i), 0.5, 1.0, wrap(angle * i), NonCooperativePolicy, UnicycleDynamics, [OtherAgentsStatesSensor], i))
+
+    return agents
+
+def get_testcase_stationary():
+    num_agents = 5
+    num_stationary_agents = 2
+
+    xMin = -3; xMax = 3
+    yMin = -3; yMax = 3
+    xDelta = xMax - xMin; yDelta = yMax - yMin
+    minDistance = 1.5
+
+    pedestrianSpeed = 1
+
+    pos = []
+    agents = []
+    np.random.seed()
+
+    def checkDis(x, y, pos):
+        for point in pos:
+            if (point[0] - x)**2 + (point[1] - y)**2 < minDistance**2:
+                return False
+        return True
+
+    while len(pos) < num_agents * 2:
+        x, y = np.random.random() * xDelta + xMin, np.random.random() * yDelta + yMin
+        if checkDis(x, y, pos):
+
+
+            pos.append([x, y])
+
+    for n in range(num_agents):
+        if n < num_stationary_agents:
+            agents.append(Agent(pos[2*n][0], pos[2*n][1], pos[2*n+1][0], pos[2*n+1][1], 0.5, pedestrianSpeed, 0, StaticPolicy, UnicycleDynamics, [OtherAgentsStatesSensor], n))
+        else:
+            agents.append(Agent(pos[2*n][0], pos[2*n][1], pos[2*n+1][0], pos[2*n+1][1], 0.5, pedestrianSpeed, 0, RVOPolicy, UnicycleDynamics, [OtherAgentsStatesSensor], n))
+
+    return agents
+
+def get_testcase_circles():
+    pass
 
 def get_testcase_crazy(policy="GA3C_CADRL"):
     agents = [
