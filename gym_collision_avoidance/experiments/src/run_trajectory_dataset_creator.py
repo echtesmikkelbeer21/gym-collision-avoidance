@@ -2,6 +2,9 @@ import os
 import numpy as np
 import pickle
 from tqdm import tqdm
+import pprint
+
+pp = pprint.PrettyPrinter()
 
 from gym_collision_avoidance.envs.config import Config
 import gym_collision_avoidance.envs.test_cases as tc
@@ -25,12 +28,12 @@ Config.TRAIN_SINGLE_AGENT = False
 Config.DT = 0.1
 start_from_last_configuration = False
 
-results_subdir = 'test'
+results_subdir = 'dataset'
 
-#test_case_fn = tc.get_testcase_cyberzoo
+test_case_fn = tc.get_testcase_cyberzoo
 #test_case_fn = tc.get_testcase_inward_cross
 #test_case_fn = tc.get_testcase_outward_cross
-test_case_fn = tc.get_testcase_stationary
+#test_case_fn = tc.get_testcase_stationary
 policies = {
             'RVO': {
                 'policy': RVOPolicy,
@@ -53,10 +56,10 @@ def add_traj(agents, trajs, dt, last_time):
 
     future_plan_horizon_secs = 3.0
     future_plan_horizon_steps = int(future_plan_horizon_secs / dt)
-
+    episode = []
     for i, agent in enumerate(agents):
         trajectory = []
-        episode = []
+
         max_ts = agent.global_state_history.shape[0]
         for t in range(max_ts):
             t_horizon = min(max_ts, t+future_plan_horizon_steps)
@@ -84,7 +87,7 @@ def add_traj(agents, trajs, dt, last_time):
             }
             trajectory.append(d)
         episode.append(trajectory)
-    trajs.append(trajectory)
+    trajs.append(episode)
     last_time = d['time'] +1.0
 
     return last_time
@@ -133,7 +136,7 @@ def main():
                         #print("Different times")
                     last_time = add_traj(agents, trajs, dt,last_time)
 
-        # print(trajs)
+        pp.pprint(trajs)
 
         one_env.reset()
 
